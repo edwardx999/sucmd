@@ -34,3 +34,10 @@ catch
 {
 	throw
 }
+
+<#
+.Synopsis
+Script to add paths to Path environment variable
+.Description
+Adds a path to the Path environment variable of the specified target. By default, adds current directory to User Path variable. 
+#>
