@@ -5,8 +5,7 @@ param (
 try
 {
 	$current_path = [Environment]::GetEnvironmentVariables($Target).Path
-	$current_dir = Resolve-Path -LiteralPath $Path
-	$current_dir = "${current_dir}"
+	$current_dir = (Resolve-Path -LiteralPath $Path).ToString()
 	$paths = $current_path.Split(";") # Not proper parsing but good enough
 	foreach($path in $paths)
 	{
