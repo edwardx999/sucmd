@@ -1,6 +1,6 @@
 param (
-	[Parameter(Position=0)][String]$Target = "User",
-	[Parameter(Position=1)][String]$Path = "."
+	[Parameter(Position=0)][String]$Path = ".",
+	[Parameter(Position=1)][String]$Target = "User"
 )
 try
 {
