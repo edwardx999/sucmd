@@ -24,3 +24,9 @@ Function mkcd($path)
 	$null = New-Item $path -ItemType Directory -ea 0
 	cd $path
 }
+
+Function mklink
+{
+	$cmd = "mklink `""+ ($args -join "`" `"") + "`""
+	cmd /c $cmd
+}
