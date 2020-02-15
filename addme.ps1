@@ -33,6 +33,7 @@ Function PathSplit([string]$path)
 						throw "Invalid characters after quoted path"
 					}
 					$start = $i + 2
+					$i += 1
 				}
 				else
 				{
