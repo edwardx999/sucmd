@@ -28,7 +28,19 @@ Function mkcd($path)
 
 Function mklink
 {
-	$cmd = "mklink `""+ ($args -join "`" `"") + "`""
+	$cmd = "mklink"
+	foreach($arg in $args)
+	{
+		if($arg.Contains(" "))
+		{
+			$cmd += " `"${arg}`""
+		}
+		else
+		{
+			$cmd += " ${arg}"
+		}
+	}
+	Write-Output $cmd
 	cmd /c $cmd
 }
 
