@@ -1,4 +1,5 @@
-$_pmake_cores_found = $false 
+$_pmake_cores_found = $false
+
 Function pmake
 {
 	if ($global:_pmake_cores_found -eq $false)
@@ -6,7 +7,7 @@ Function pmake
 		try
 		{
 			$global:_pmake_cores_found = (Get-WmiObject -class Win32_ComputerSystem).numberoflogicalprocessors
-			if(($global:_pmake_cores_found -eq $null) -or ($global:_pmake_cores_found -lt 1))
+			if((-not $global:_pmake_cores_found -is [UInt32]) -or ($global:_pmake_cores_found -lt 1))
 			{
 				$global:_pmake_cores_found = 1
 			}
@@ -29,4 +30,9 @@ Function mklink
 {
 	$cmd = "mklink `""+ ($args -join "`" `"") + "`""
 	cmd /c $cmd
+}
+
+Function CommandLocation($command)
+{
+	return Split-Path -LiteralPath (Get-Command $command).Source
 }
