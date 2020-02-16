@@ -40,7 +40,6 @@ Function mklink
 			$cmd += " ${arg}"
 		}
 	}
-	Write-Output $cmd
 	cmd /c $cmd
 }
 
