@@ -83,16 +83,20 @@ Function linkcopy
 		{
 			throw "Invalid Arguments"
 		}
+		$paths = Resolve-Path -Path $path
+		foreach($p in $paths)
+		{
+			mklink (Split-Path $p -Leaf) $p.ToString() $link_type
+		}
 	}
 	else
 	{
-		$path = args[0]
-		$link_type = "/s"
-	}
-	$paths = Resolve-Path -Path $path
-	foreach($p in $paths)
-	{
-		mklink (Split-Path $p -Leaf) $p.ToString() $link_type
+		$path = $args[0]
+		$paths = Resolve-Path -Path $path
+		foreach($p in $paths)
+		{
+			mklink (Split-Path $p -Leaf) $p.ToString()
+		}
 	}
 }
 
@@ -104,4 +108,13 @@ Function CommandLocation($command)
 Function SleepComputer
 {
 	[System.Windows.Forms.Application]::SetSuspendState([System.Windows.Forms.PowerState]::Suspend, $false, $false)
+}
+
+<#
+.Description
+List directories in 
+#>
+Function lsdirs
+{
+	Get-ChildItem $args[0] -Directory
 }
