@@ -118,3 +118,72 @@ Function lsdirs
 {
 	Get-ChildItem $args[0] -Directory
 }
+
+Function swapname($a, $b)
+{
+	$old_error_preference = $ErrorActionPreference
+	$ErrorActionPreference = "Stop"
+	try
+	{
+		$a = ([string](Resolve-Path -LiteralPath $a)).TrimEnd('\')
+		$b = ([string](Resolve-Path -LiteralPath $b)).TrimEnd('\')
+		if($a -eq $b)
+		{
+			throw "Paths must be different"
+		}
+		do
+		{
+			$temp_name = [string]$a + ([string](Get-Random -Maximum 1000000000)).PadLeft(9,"0")
+		} while((Test-Path -Path $temp_name))
+		if ((Test-Path -Path $a -PathType Leaf) -and (Test-Path $b -PathType Leaf))
+		{
+			[void](New-Item -ItemType HardLink -Path $temp_name -Value $a)
+			try
+			{
+				Move-Item -Path $b -Destination $a -Force
+			}
+			catch
+			{
+				Remove-Item -Path $temp_name
+				throw
+			}
+			try
+			{
+				Move-Item -Path $temp_name -Destination $b -Force
+			}
+			catch
+			{
+				Move-Item -Path $a -Destination $b -Force
+				Move-Item -Path $temp_name -Destination $a -Force
+				throw
+			}
+		}
+		elseif((Test-Path -Path $a -PathType Container) -and (Test-Path $b -PathType Container))
+		{
+			Move-Item -Path $a -Destination $temp_name -Force
+			try
+			{
+				Move-Item -Path $b -Destination $a -Force
+			}
+			catch
+			{
+				Move-Item -Path $temp_name -Destination $a -Force
+				throw
+			}
+			try 
+			{
+				Move-Item -Path $temp_name -Destination $b -Force
+			}
+			catch
+			{
+				Move-Item -Path $a -Destination $b  -Force
+				Move-Item -Path $temp_name -Destination $a  -Force
+				throw
+			}
+		}
+	}
+	finally
+	{
+		$ErrorActionPreference = $old_error_preference
+	}
+}
