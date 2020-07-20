@@ -8,21 +8,35 @@ Function pmake
 {
 	if ($global:_pmake_cores_found -eq $false)
 	{
-		try
+		Function fix_core_value
 		{
-			$global:_pmake_cores_found = (Get-WmiObject -class Win32_ComputerSystem).numberoflogicalprocessors
 			if((-not $global:_pmake_cores_found -is [UInt32]) -or ($global:_pmake_cores_found -lt 1))
 			{
 				$global:_pmake_cores_found = 1
 			}
 		}
+		try
+		{
+			$global:_pmake_cores_found = (Get-WmiObject -class Win32_ComputerSystem).numberoflogicalprocessors
+			fix_core_value
+		}
 		catch
 		{
-			$global:_pmake_cores_found = 1
+			try
+			{
+				$global:_pmake_cores_found = (Get-CimInstance Win32_ComputerSystem).NumberOfLogicalProcessors
+				fix_core_value
+			}
+			catch
+			{
+				$global:_pmake_cores_found = 1
+			}
 		}
 	}
 	make -j $global:_pmake_cores_found
 }
+
+
 
 <#
 .Description
